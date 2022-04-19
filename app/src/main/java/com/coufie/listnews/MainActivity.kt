@@ -12,27 +12,43 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var adapternews : NewsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        getDataNews()
+
+        adapternews = NewsAdapter()
 
         rvNews.layoutManager = LinearLayoutManager(this)
-        rvNews.adapter = NewsAdapter()
+        rvNews.adapter = adapternews
 
-        getDataNews()
+
     }
-
 
     fun getDataNews(){
         val viewModel = ViewModelProvider(this).get(NewsViewModel::class.java)
         viewModel.getNewsLiveDataa().observe(this, Observer {
             if(it != null){
-                NewsAdapter().setDataNews(it)
-                NewsAdapter().notifyDataSetChanged()
-                Log.d("tes", it.toString())
+
+////                salah
+//                NewsAdapter().setDataNews(it)
+//                NewsAdapter().notifyDataSetChanged()
+
+                adapternews.setDataNews(it)
+                adapternews.notifyDataSetChanged()
             }
         })
         viewModel.callNewsApi()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getDataNews()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }
